@@ -1,0 +1,28 @@
+{
+  "signup": "SIGN UP",
+  "joinNow": "Join Now",
+  "continueTxt":"Continue",
+  "confirmContinueTxt":"Confirm & Continue",
+  "continueGoogle":"Continue with google",
+  "enterCode":"Enter code sent to your Email",
+  "weHaveSend":"We have sent an OTP to",
+  "didNotReceive":"Did not receive OTP?",
+  "resendCode":"Resend Code",
+  "time": "9:14",
+  "profile_setup_title": "Let’s Set You Up for the Ride!",
+  "profile_setup_subtitle": "Enter your details below to get started",
+  "addPicture": "Add Picture",
+  "userNameExample": "Ayush Shukla",
+  "fullName": "Full Name",
+  "createUsername": "Create Username",
+  "gender": "Gender",
+  "state": "State",
+  "city": "City",
+  "dateOfBirth": "Date Of Birth",
+  "day": "Day",
+  "month": "Month",
+  "year": "Year",
+  "next": "Next",
+  "congratulationsYouAre":"Congratulations you're now an Agent of change"
+}
+

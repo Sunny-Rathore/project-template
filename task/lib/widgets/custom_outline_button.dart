@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:task/core/utils/app_extension.dart';
+import 'package:task/core/utils/size_utils.dart';
+import 'package:task/widgets/base_button.dart';
 
-import '../core/app_export.dart';
-import 'base_button.dart';
-
-class CustomElevatedButton extends BaseButton {
-  const CustomElevatedButton({
+class CustomOutlineButton extends BaseButton {
+  const CustomOutlineButton({
     super.key,
     this.decoration,
     this.leftIcon,
@@ -21,7 +20,6 @@ class CustomElevatedButton extends BaseButton {
     super.width,
     super.isLoading,
     required super.text,
-    this.backgroundColor,
     this.radius,
   });
 
@@ -30,8 +28,6 @@ class CustomElevatedButton extends BaseButton {
   final Widget? leftIcon;
 
   final Widget? rightIcon;
-
-  final Color? backgroundColor;
 
   final double? radius;
 
@@ -46,7 +42,7 @@ class CustomElevatedButton extends BaseButton {
   }
 
   Widget buildElevatedButtonWidget(BuildContext context) => Container(
-    height: height ?? 52.v,
+    height: height ?? 50.v,
     width: width ?? double.maxFinite,
     margin: margin,
     decoration: decoration,
@@ -54,13 +50,14 @@ class CustomElevatedButton extends BaseButton {
       style:
           buttonStyle ??
           ElevatedButton.styleFrom(
+            elevation: 0,
+            backgroundColor: context.colorScheme.primary,
             shape: RoundedRectangleBorder(
+              side: BorderSide(color: context.colorScheme.primary),
               borderRadius: BorderRadius.circular(radius ?? 2.h),
             ),
-            overlayColor: context.colorScheme.onPrimary,
-            backgroundColor: backgroundColor ?? context.colorScheme.primary,
           ),
-      onPressed: (isLoading ?? false) ? null : onPressed,
+      onPressed: isLoading ?? false ? null : onPressed ?? () {},
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,22 +66,18 @@ class CustomElevatedButton extends BaseButton {
           (isLoading ?? false)
               ? Center(
                   child: LoadingAnimationWidget.staggeredDotsWave(
-                    color: context.colorScheme.surface,
-                    size: 30.fSize,
+                    color: Colors.white,
+                    size: 30,
                   ),
                 )
-              : Padding(
-                  padding: EdgeInsets.only(left: leftIcon == null ? 0 : 10.h),
-                  child: Text(
-                    text,
-                    style:
-                        buttonTextStyle ??
-                        context.textTheme.bodyMedium?.copyWith(
-                          fontSize: 16.0.fSize,
-                          color: context.colorScheme.surface,
-                          // fontWeight: FontWeight.w600,
-                        ),
-                  ),
+              : Text(
+                  text,
+                  style:
+                      buttonTextStyle ??
+                      context.textTheme.bodyMedium?.copyWith(
+                        fontSize: 16.0.fSize,
+                        color: context.colorScheme.onSurface,
+                      ),
                 ),
           rightIcon ?? const SizedBox.shrink(),
         ],

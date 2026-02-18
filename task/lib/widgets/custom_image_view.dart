@@ -41,7 +41,9 @@ class CustomImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return alignment != null ? Align(alignment: alignment!, child: _buildWidget()) : _buildWidget();
+    return alignment != null
+        ? Align(alignment: alignment!, child: _buildWidget())
+        : _buildWidget();
   }
 
   Widget _buildWidget() {
@@ -54,7 +56,10 @@ class CustomImageView extends StatelessWidget {
   ///build the image with border radius
   _buildCircleImage() {
     if (radius != null) {
-      return ClipRRect(borderRadius: radius ?? BorderRadius.zero, child: _buildImageWithBorder());
+      return ClipRRect(
+        borderRadius: radius ?? BorderRadius.zero,
+        child: _buildImageWithBorder(),
+      );
     } else {
       return _buildImageWithBorder();
     }
@@ -79,10 +84,22 @@ class CustomImageView extends StatelessWidget {
           return SizedBox(
             height: height,
             width: width,
-            child: SvgPicture.asset(imagePath!, height: height, width: width, fit: fit ?? BoxFit.cover, color: color),
+            child: SvgPicture.asset(
+              imagePath!,
+              height: height,
+              width: width,
+              fit: fit ?? BoxFit.cover,
+              color: color,
+            ),
           );
         case ImageType.file:
-          return Image.file(File(imagePath!), height: height, width: width, fit: fit ?? BoxFit.contain, color: color);
+          return Image.file(
+            File(imagePath!),
+            height: height,
+            width: width,
+            fit: fit ?? BoxFit.contain,
+            color: color,
+          );
         case ImageType.network:
           return CachedNetworkImage(
             height: height,
@@ -93,10 +110,17 @@ class CustomImageView extends StatelessWidget {
             placeholder: (context, url) => SizedBox(
               height: height ?? 200.h,
               width: width ?? SizeUtils.width,
-              child: LinearProgressIndicator(color: Colors.black26, backgroundColor: Colors.black12),
+              child: LinearProgressIndicator(
+                color: Colors.black26,
+                backgroundColor: Colors.black12,
+              ),
             ),
-            errorWidget: (context, url, error) =>
-                Image.asset(placeHolder, height: height, width: width, fit: fit ?? BoxFit.contain),
+            errorWidget: (context, url, error) => Image.asset(
+              placeHolder,
+              height: height,
+              width: width,
+              fit: fit ?? BoxFit.contain,
+            ),
           );
         case ImageType.png:
         default:
@@ -106,8 +130,12 @@ class CustomImageView extends StatelessWidget {
             width: width,
             fit: fit ?? BoxFit.contain,
             color: color,
-            errorBuilder: (context, error, stackTrace) =>
-                Image.asset(placeHolder, height: height, width: width, fit: fit ?? BoxFit.contain),
+            errorBuilder: (context, error, stackTrace) => Image.asset(
+              placeHolder,
+              height: height,
+              width: width,
+              fit: fit ?? BoxFit.contain,
+            ),
           );
       }
     }

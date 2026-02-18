@@ -1,30 +1,46 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:injectable/injectable.dart';
+
+enum NetworkStatus { online, offline }
 
 // For checking internet connectivity
-abstract class NetworkInfoI {
-  Future<bool> isConnected();
+abstract class NetworkInfo {
+  Future<bool> get isConnected;
 
-  Future<ConnectivityResult> get connectivityResult;
+  Future<NetworkStatus> get status;
 
-  Stream<ConnectivityResult> get onConnectivityChanged;
+  Stream<NetworkStatus> get onStatusChanged;
 }
 
-class NetworkInfo {
-  Connectivity connectivity;
+@LazySingleton(as: NetworkInfo)
+class NetworkInfoImpl implements NetworkInfo {
+  late Connectivity connectivity;
 
-  NetworkInfo(this.connectivity) {
-    connectivity = connectivity;
+  NetworkInfoImpl() {
+    connectivity = Connectivity();
   }
 
-  ///checks internet is connected or not
-  ///returns [true] if internet is connected
-  ///else it will return [false]
-
-  Future<bool> isConnected() async {
+  @override
+  Future<bool> get isConnected async {
     final result = await connectivity.checkConnectivity();
-    if (!result.contains(ConnectivityResult.none)) {
-      return true;
-    }
-    return false;
+    return !result.contains(ConnectivityResult.none);
+  }
+
+  @override
+  Future<NetworkStatus> get status async {
+    final result = await connectivity.checkConnectivity();
+
+    return result.contains(ConnectivityResult.none)
+        ? NetworkStatus.offline
+        : NetworkStatus.online;
+  }
+
+  @override
+  Stream<NetworkStatus> get onStatusChanged {
+    return connectivity.onConnectivityChanged.map(
+      (results) => results.contains(ConnectivityResult.none)
+          ? NetworkStatus.offline
+          : NetworkStatus.online,
+    );
   }
 }

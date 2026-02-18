@@ -4,75 +4,46 @@ class User extends Equatable {
   final String? id;
   final String? name;
   final String? email;
-  final String? profileImage;
-  final bool? isOnboarded;
-  final String? userRole;
-  final String? userName;
-  final String? accessToken;
-  final String? dob;
-  final String? gender;
-  final String? latitude;
-  final String? longitude;
-  final bool? isFollow;
-  final num? followingCount;
-  final num? followerCount;
-  final num? weight;
+  final String? avatarUrl;
+  final UserRole? role;
+  final DateTime? createdAt;
 
   const User({
     this.id,
     this.name,
     this.email,
-    this.isOnboarded,
-    this.userRole,
-    this.userName,
-    this.accessToken,
-    this.dob,
-    this.gender,
-    this.latitude,
-    this.longitude,
-    this.isFollow,
-    this.followerCount,
-    this.followingCount,
-    this.weight,
-    this.profileImage,
+    this.avatarUrl,
+    this.role,
+    this.createdAt,
   });
 
-  User copyWith({bool? isFollow, num? followerCount, num? followingCount, String? accessToken}) {
-    return User(
-      id: id,
-      name: name,
-      email: email,
-      isOnboarded: isOnboarded,
-      userRole: userRole,
-      userName: userName,
-      accessToken: accessToken ?? this.accessToken,
-      dob: dob,
-      gender: gender,
-      isFollow: isFollow ?? this.isFollow,
-      followingCount: followingCount ?? this.followingCount,
-      followerCount: followerCount ?? this.followerCount,
-      weight: weight,
-      profileImage: profileImage,
-    );
-  }
+  User copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? avatarUrl,
+    UserRole? role,
+    DateTime? createdAt,
+  }) => User(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    email: email ?? this.email,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+    role: role ?? this.role,
+    createdAt: createdAt ?? this.createdAt,
+  );
 
   @override
-  List<Object?> get props => [
-    id,
-    name,
-    email,
-    isOnboarded,
-    userRole,
-    userName,
-    accessToken,
-    dob,
-    gender,
-    latitude,
-    longitude,
-    isFollow,
-    followerCount,
-    followingCount,
-    weight,
-    profileImage,
-  ];
+  List<Object?> get props => [id, name, email, avatarUrl, role, createdAt];
+}
+
+enum UserRole {
+  admin,
+  user,
+  guest;
+
+  static UserRole fromString(String raw) => UserRole.values.firstWhere(
+    (r) => r.name.toLowerCase() == raw.toLowerCase(),
+    orElse: () => UserRole.user,
+  );
 }

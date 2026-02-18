@@ -4,14 +4,16 @@ import 'package:task/l10n/app_localizations.dart';
 extension SnackBarExtension on BuildContext {
   ScaffoldFeatureController showSnackBar(String message) {
     ScaffoldMessenger.of(this).hideCurrentSnackBar();
-    return ScaffoldMessenger.of(
-      this,
-    ).showSnackBar(SnackBar(duration: const Duration(seconds: 1), content: Text(message)));
+    return ScaffoldMessenger.of(this).showSnackBar(
+      SnackBar(duration: const Duration(seconds: 1), content: Text(message)),
+    );
   }
 }
 
 extension ThemeExtension on BuildContext {
   TextTheme get textTheme => Theme.of(this).textTheme;
+
+  ColorScheme get colorScheme => Theme.of(this).colorScheme;
 }
 
 extension LocalizationExtension on BuildContext {

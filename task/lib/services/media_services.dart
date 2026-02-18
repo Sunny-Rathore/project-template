@@ -5,7 +5,9 @@ import 'package:task/theme/theme.dart';
 
 class MediaServices {
   static Future<String?> pickImageFromGallery() async {
-    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedImage = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
     if (pickedImage != null) {
       return pickedImage.path;
     }
@@ -13,7 +15,9 @@ class MediaServices {
   }
 
   static Future<String?> pickImageFromCamera() async {
-    final pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
+    final pickedImage = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+    );
     if (pickedImage != null) {
       return pickedImage.path;
     }
@@ -43,13 +47,17 @@ class MediaServices {
       uiSettings: [
         AndroidUiSettings(
           cropStyle: cropStyle ?? CropStyle.rectangle,
-          initAspectRatio: cropAspectRatioPreset ?? CropAspectRatioPreset.ratio16x9,
+          initAspectRatio:
+              cropAspectRatioPreset ?? CropAspectRatioPreset.ratio16x9,
           hideBottomControls: true,
           toolbarTitle: 'Crop Image',
           toolbarColor: Colors.black,
-          toolbarWidgetColor: appTheme.primary,
+          // toolbarWidgetColor: appTheme.primary,
         ),
-        IOSUiSettings(cropStyle: cropStyle ?? CropStyle.rectangle, hidesNavigationBar: true),
+        IOSUiSettings(
+          cropStyle: cropStyle ?? CropStyle.rectangle,
+          hidesNavigationBar: true,
+        ),
       ],
     );
     return croppedFile?.path;
@@ -123,6 +131,9 @@ class Media {
   final String name;
   final String fileExtension;
   Media({required this.path, required this.name, required this.fileExtension});
-  factory Media.fromJson(Map<String, dynamic> json) =>
-      Media(path: json['path'], name: json['name'], fileExtension: json['extension']);
+  factory Media.fromJson(Map<String, dynamic> json) => Media(
+    path: json['path'],
+    name: json['name'],
+    fileExtension: json['extension'],
+  );
 }

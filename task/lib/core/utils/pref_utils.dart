@@ -2,16 +2,11 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefUtils {
   static SharedPreferences? _sharedPreferences;
-
-  PrefUtils() {
-    SharedPreferences.getInstance().then((value) {
-      _sharedPreferences = value;
-    });
-  }
 
   static Future<void> init() async {
     _sharedPreferences ??= await SharedPreferences.getInstance();
@@ -22,74 +17,17 @@ class PrefUtils {
   ///will clear all the data stored in preference
   static void clearPreferencesData() async {
     _sharedPreferences!.clear();
-    // await FirebaseServices.handleLogOut();
   }
 
-  Future<void> setThemeData(String value) {
-    return _sharedPreferences!.setString('themeData', value);
+  static Future<void> setThemeMode(ThemeMode mode) async {
+    await _sharedPreferences!.setString('themeMode', mode.name);
   }
 
-  static Future<void> setIsNewUser(bool value) {
-    return _sharedPreferences!.setBool('isNew', value);
-  }
-
-  static bool getIsNewUser() {
-    return _sharedPreferences?.getBool('isNew') ?? true;
-  }
-
-  static Future<void> setIsOnboarded(bool value) {
-    return _sharedPreferences!.setBool('isFormComplete', value);
-  }
-
-  static bool getIsOnboarded() {
-    return _sharedPreferences?.getBool('isFormComplete') ?? true;
-  }
-
-  static Future<void> setRole(String value) {
-    return _sharedPreferences!.setString('role', value);
-  }
-
-  static String getRole() {
-    return _sharedPreferences?.getString('role') ?? '';
-  }
-
-  static Future<void> setId(String value) {
-    return _sharedPreferences!.setString('id', value);
-  }
-
-  static String getId() {
-    return _sharedPreferences?.getString('id') ?? '';
-  }
-
-  static Future<void> setToken(String value) {
-    return _sharedPreferences!.setString('token', value);
-  }
-
-  static String getToken() {
-    return _sharedPreferences?.getString('token') ?? '';
-  }
-
-  static Future<void> setUserName(String value) {
-    return _sharedPreferences!.setString('userName', value);
-  }
-
-  static String getUserName() {
-    return _sharedPreferences?.getString('userName') ?? '';
-  }
-
-  static Future<void> setUserProfile(String value) {
-    return _sharedPreferences!.setString('userProfile', value);
-  }
-
-  static String getUserProfile() {
-    return _sharedPreferences?.getString('userProfile') ?? '';
-  }
-
-  String getThemeData() {
+  static String getThemeMode() {
     try {
-      return _sharedPreferences!.getString('themeData')!;
+      return _sharedPreferences!.getString('themeMode')!;
     } catch (e) {
-      return 'primary';
+      return ThemeMode.light.name;
     }
   }
 }

@@ -5,29 +5,31 @@ import 'package:flutter/material.dart';
 const num FIGMA_DESIGN_WIDTH = 430;
 const num FIGMA_DESIGN_HEIGHT = 932;
 const num FIGMA_DESIGN_STATUS_BAR = 0;
-typedef ResponsiveBuild = Widget Function(
-  BuildContext context,
-  Orientation orientation,
-  DeviceType deviceType,
-);
+typedef ResponsiveBuild =
+    Widget Function(
+      BuildContext context,
+      Orientation orientation,
+      DeviceType deviceType,
+    );
 
 class Sizer extends StatelessWidget {
-  const Sizer({
-    super.key,
-    required this.builder,
-  });
+  const Sizer({super.key, required this.builder});
 
   /// Builds the widget whenever the orientation changes.
   final ResponsiveBuild builder;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return OrientationBuilder(builder: (context, orientation) {
-        SizeUtils.setScreenSize(constraints, orientation);
-        return builder(context, orientation, SizeUtils.deviceType);
-      });
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return OrientationBuilder(
+          builder: (context, orientation) {
+            SizeUtils.setScreenSize(constraints, orientation);
+            return builder(context, orientation, SizeUtils.deviceType);
+          },
+        );
+      },
+    );
   }
 }
 
@@ -59,12 +61,14 @@ class SizeUtils {
 
     // Sets screen width and height
     if (orientation == Orientation.portrait) {
-      width =
-          boxConstraints.maxWidth.isNonZero(defaultValue: FIGMA_DESIGN_WIDTH);
+      width = boxConstraints.maxWidth.isNonZero(
+        defaultValue: FIGMA_DESIGN_WIDTH,
+      );
       height = boxConstraints.maxHeight.isNonZero();
     } else {
-      width =
-          boxConstraints.maxHeight.isNonZero(defaultValue: FIGMA_DESIGN_WIDTH);
+      width = boxConstraints.maxHeight.isNonZero(
+        defaultValue: FIGMA_DESIGN_WIDTH,
+      );
       height = boxConstraints.maxWidth.isNonZero();
     }
     deviceType = DeviceType.mobile;

@@ -34,8 +34,10 @@ String? validatePhoneNumber(String number) {
   return null;
 }
 
-String? validateAndMatchPassword(
-    {required String password, required String reEnteredPassword}) {
+String? validateAndMatchPassword({
+  required String password,
+  required String reEnteredPassword,
+}) {
   if (password.isEmpty) {
     return 'Please enter password';
   } else if (password != reEnteredPassword) {

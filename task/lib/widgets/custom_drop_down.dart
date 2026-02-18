@@ -26,7 +26,7 @@ class CustomDropDown extends StatelessWidget {
     this.fillColor,
     this.filled = false,
     this.validator,
-    this.onChanged,
+    required this.onChanged,
     this.value,
     this.isSearchable,
     this.borderColor,
@@ -72,7 +72,7 @@ class CustomDropDown extends StatelessWidget {
 
   final FormFieldValidator<SelectionPopupModel>? validator;
 
-  final Function(SelectionPopupModel)? onChanged;
+  final Function(SelectionPopupModel) onChanged;
 
   final SelectionPopupModel? value;
 
@@ -80,14 +80,19 @@ class CustomDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return alignment != null ? Align(alignment: alignment ?? Alignment.center, child: dropDownWidget) : dropDownWidget;
+    return alignment != null
+        ? Align(
+            alignment: alignment ?? Alignment.center,
+            child: dropDownWidget(context),
+          )
+        : dropDownWidget(context);
   }
 
-  Widget get dropDownWidget => SizedBox(
+  Widget dropDownWidget(BuildContext context) => SizedBox(
     height: height ?? 50.v,
     width: width ?? double.maxFinite,
     child: DropdownButtonFormField<SelectionPopupModel>(
-      dropdownColor: Colors.black,
+      // dropdownColor: ,
       isDense: true,
       iconSize: 0.fSize,
       value: value,
@@ -99,10 +104,14 @@ class CustomDropDown extends StatelessWidget {
       items: items?.map((SelectionPopupModel item) {
         return DropdownMenuItem<SelectionPopupModel>(
           value: item,
-          child: Text(item.title, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodySmall),
+          child: Text(
+            item.title,
+            overflow: TextOverflow.ellipsis,
+            style: context.textTheme.bodySmall,
+          ),
         );
       }).toList(),
-      decoration: decoration,
+      decoration: decoration(context),
       validator: validator,
       onChanged: (value) {
         onChanged!(value!);
@@ -110,29 +119,60 @@ class CustomDropDown extends StatelessWidget {
     ),
   );
 
-  InputDecoration get decoration => InputDecoration(
-    labelText: hintText ?? "Select item",
-    labelStyle:
-        hintStyle ?? GoogleFonts.urbanist(fontSize: 14.0.fSize, color: appTheme.textLight, fontWeight: FontWeight.w400),
+  InputDecoration decoration(BuildContext context) => InputDecoration(
+    hint: Text(
+      hintText ?? 'Select item',
+      style: context.textTheme.bodySmall?.copyWith(
+        color: context.colorScheme.outline,
+      ),
+    ),
     prefixIcon: prefix,
     prefixIconConstraints: prefixConstraints,
-    suffixIcon: Icon(Icons.arrow_drop_down, color: Colors.grey, size: 20.h),
+    suffixIcon: Icon(
+      Icons.arrow_drop_down,
+      color: context.colorScheme.onSurface,
+      size: 20.h,
+    ),
     suffixIconConstraints: suffixConstraints,
-    isDense: true,
-    contentPadding: contentPadding ?? EdgeInsets.all(13.v),
-    fillColor: fillColor ?? Colors.black,
+    contentPadding: contentPadding ?? EdgeInsets.all(13.h),
+    fillColor: fillColor ?? context.colorScheme.surface,
     filled: true,
     focusedErrorBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: borderColor ?? appTheme.borderColor, width: 1),
+      borderSide: BorderSide(
+        color: borderColor ?? context.colorScheme.error,
+        width: 1.h,
+      ),
     ),
     border:
-        borderDecoration ?? OutlineInputBorder(borderSide: BorderSide(color: borderColor ?? appTheme.grey, width: 1)),
+        borderDecoration ??
+        OutlineInputBorder(
+          borderSide: BorderSide(
+            color: borderColor ?? context.colorScheme.outline,
+            width: 1.h,
+          ),
+        ),
     enabledBorder:
-        borderDecoration ?? OutlineInputBorder(borderSide: BorderSide(color: borderColor ?? appTheme.grey, width: 1)),
+        borderDecoration ??
+        OutlineInputBorder(
+          borderSide: BorderSide(
+            color: borderColor ?? context.colorScheme.outline,
+            width: 1.h,
+          ),
+        ),
     focusedBorder:
         borderDecoration ??
-        OutlineInputBorder(borderSide: BorderSide(color: borderColor ?? appTheme.borderColor, width: 1)),
+        OutlineInputBorder(
+          borderSide: BorderSide(
+            color: borderColor ?? context.colorScheme.primary,
+            width: 1.h,
+          ),
+        ),
 
-    errorBorder: OutlineInputBorder(borderSide: BorderSide(color: borderColor ?? appTheme.errorRed, width: 1)),
+    errorBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: borderColor ?? context.colorScheme.onError,
+        width: 1.h,
+      ),
+    ),
   );
 }

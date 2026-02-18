@@ -1,18 +1,22 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:injectable/injectable.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:task/core/network/exception_handler.dart';
+import 'package:task/core/network/network_info.dart';
 
 import '../errors/exceptions.dart';
 import '../utils/api_constant.dart';
 
+@singleton
 class ApiClient {
+  final NetworkInfo _networkInfo;
   late Dio _dio;
 
   // Constructor
-  ApiClient({String? baseUrl}) {
+  ApiClient(this._networkInfo) {
     BaseOptions options = BaseOptions(
       baseUrl:
-          baseUrl ??
           ApiConstant.baseUrl, // Set a default base URL if none is provided
       connectTimeout: const Duration(seconds: 10), // Set connection timeout
       receiveTimeout: const Duration(seconds: 10), // Set receiving timeout
@@ -26,18 +30,17 @@ class ApiClient {
 
     // Optional: Set up interceptors
     _dio.interceptors.addAll([
-      PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
-        responseBody: true,
-        responseHeader: false,
-        error: true,
-        compact: true,
-        enabled: kDebugMode,
-        maxWidth: 90,
-      ),
       InterceptorsWrapper(
-        onRequest: (options, handler) {
+        onRequest: (options, handler) async {
+          if (!await _networkInfo.isConnected) {
+            return handler.reject(
+              DioException(
+                requestOptions: options,
+                error: NoInternetException(),
+                type: DioExceptionType.connectionError,
+              ),
+            );
+          }
           // Handle pre-request actions like adding auth tokens
           return handler.next(options); // Continue with the request
         },
@@ -47,9 +50,18 @@ class ApiClient {
         },
         onError: (DioException error, handler) {
           // Handle errors
-          debugPrint('Request failed: ${error.response?.statusCode}');
           return handler.next(error); // Continue with the error
         },
+      ),
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        enabled: kDebugMode,
+        maxWidth: 90,
       ),
     ]);
   }
@@ -66,11 +78,8 @@ class ApiClient {
         queryParameters: queryParameters,
         options: options,
       );
-    } on DioException catch (e) {
-      // Handle Dio exceptions
-      throw handleDioException(e);
     } catch (e) {
-      rethrow;
+      throw ExceptionHandler.handle(e);
     }
   }
 
@@ -78,10 +87,8 @@ class ApiClient {
   Future<Response> post(String path, {dynamic data, Options? options}) async {
     try {
       return await _dio.post(path, data: data, options: options);
-    } on DioException catch (e) {
-      throw handleDioException(e);
     } catch (e) {
-      rethrow;
+      throw ExceptionHandler.handle(e);
     }
   }
 
@@ -89,10 +96,8 @@ class ApiClient {
   Future<Response> put(String path, {dynamic data, Options? options}) async {
     try {
       return await _dio.put(path, data: data, options: options);
-    } on DioException catch (e) {
-      throw handleDioException(e);
     } catch (e) {
-      rethrow;
+      throw ExceptionHandler.handle(e);
     }
   }
 
@@ -100,10 +105,8 @@ class ApiClient {
   Future<Response> delete(String path, {dynamic data, Options? options}) async {
     try {
       return await _dio.delete(path, data: data, options: options);
-    } on DioException catch (e) {
-      throw handleDioException(e);
     } catch (e) {
-      rethrow;
+      throw ExceptionHandler.handle(e);
     }
   }
 
@@ -111,10 +114,8 @@ class ApiClient {
   Future<Response> patch(String path, {dynamic data, Options? options}) async {
     try {
       return await _dio.patch(path, data: data, options: options);
-    } on DioException catch (e) {
-      throw handleDioException(e);
     } catch (e) {
-      rethrow;
+      throw ExceptionHandler.handle(e);
     }
   }
 
@@ -123,17 +124,7 @@ class ApiClient {
     _dio.options.headers.addAll(headers);
   }
 
-  Exception handleDioException(DioException e) {
-    if (e.type == DioExceptionType.connectionTimeout) {
-      throw NoInternetException('Connection timeout. Please try again later.');
-    } else if (e.type == DioExceptionType.receiveTimeout) {
-      throw NoInternetException('Receive timeout. Please try again later.');
-    } else if (e.type == DioExceptionType.cancel) {
-      throw Exception('Request was cancelled.');
-    } else if (e.type == DioExceptionType.connectionError) {
-      throw Exception('No Internet Connection');
-    } else {
-      throw e;
-    }
+  void setAuthToken(String token) {
+    _dio.options.headers['Authorization'] = 'Bearer $token';
   }
 }

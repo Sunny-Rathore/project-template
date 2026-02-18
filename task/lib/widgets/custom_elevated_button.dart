@@ -36,11 +36,14 @@ class CustomElevatedButton extends BaseButton {
   @override
   Widget build(BuildContext context) {
     return alignment != null
-        ? Align(alignment: alignment ?? Alignment.center, child: buildElevatedButtonWidget)
-        : buildElevatedButtonWidget;
+        ? Align(
+            alignment: alignment ?? Alignment.center,
+            child: buildElevatedButtonWidget(context),
+          )
+        : buildElevatedButtonWidget(context);
   }
 
-  Widget get buildElevatedButtonWidget => Container(
+  Widget buildElevatedButtonWidget(BuildContext context) => Container(
     height: height ?? 52.v,
     width: width ?? double.maxFinite,
     margin: margin,
@@ -49,27 +52,35 @@ class CustomElevatedButton extends BaseButton {
       style:
           buttonStyle ??
           ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius ?? 2.h)),
-            backgroundColor: backgroundColor ?? appTheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radius ?? 2.h),
+            ),
+            overlayColor: context.colorScheme.onPrimary,
+            backgroundColor: backgroundColor ?? context.colorScheme.primary,
           ),
-      onPressed: isLoading ?? false ? () {} : onPressed ?? () {},
+      onPressed: (isLoading ?? false) ? null : onPressed,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           leftIcon ?? const SizedBox.shrink(),
           (isLoading ?? false)
-              ? Center(child: LoadingAnimationWidget.staggeredDotsWave(color: Colors.black, size: 30))
+              ? Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: context.colorScheme.surface,
+                    size: 30.fSize,
+                  ),
+                )
               : Padding(
                   padding: EdgeInsets.only(left: leftIcon == null ? 0 : 10.h),
                   child: Text(
                     text,
                     style:
                         buttonTextStyle ??
-                        GoogleFonts.inter(
+                        context.textTheme.bodyMedium?.copyWith(
                           fontSize: 16.0.fSize,
-                          color: appTheme.background,
-                          fontWeight: FontWeight.w600,
+                          color: context.colorScheme.surface,
+                          // fontWeight: FontWeight.w600,
                         ),
                   ),
                 ),
@@ -109,11 +120,14 @@ class CustomOutlineButton extends BaseButton {
   @override
   Widget build(BuildContext context) {
     return alignment != null
-        ? Align(alignment: alignment ?? Alignment.center, child: buildElevatedButtonWidget)
-        : buildElevatedButtonWidget;
+        ? Align(
+            alignment: alignment ?? Alignment.center,
+            child: buildElevatedButtonWidget(context),
+          )
+        : buildElevatedButtonWidget(context);
   }
 
-  Widget get buildElevatedButtonWidget => Container(
+  Widget buildElevatedButtonWidget(BuildContext context) => Container(
     height: height ?? 50.v,
     width: width ?? double.maxFinite,
     margin: margin,
@@ -123,9 +137,9 @@ class CustomOutlineButton extends BaseButton {
           buttonStyle ??
           ElevatedButton.styleFrom(
             elevation: 0,
-            backgroundColor: Colors.black,
+            backgroundColor: context.colorScheme.primary,
             shape: RoundedRectangleBorder(
-              side: BorderSide(color: appTheme.primary),
+              side: BorderSide(color: context.colorScheme.primary),
               borderRadius: BorderRadius.circular(radius ?? 2.h),
             ),
           ),
@@ -136,12 +150,21 @@ class CustomOutlineButton extends BaseButton {
         children: [
           leftIcon ?? const SizedBox.shrink(),
           (isLoading ?? false)
-              ? Center(child: LoadingAnimationWidget.staggeredDotsWave(color: Colors.white, size: 30))
+              ? Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                )
               : Text(
                   text,
                   style:
                       buttonTextStyle ??
-                      GoogleFonts.inter(fontSize: 16.0.fSize, color: appTheme.primary, fontWeight: FontWeight.w600),
+                      GoogleFonts.inter(
+                        fontSize: 16.0.fSize,
+                        color: context.colorScheme.onPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
           rightIcon ?? const SizedBox.shrink(),
         ],

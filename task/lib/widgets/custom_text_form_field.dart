@@ -35,7 +35,6 @@ class CustomTextFormField extends StatelessWidget {
     this.maxLength,
     this.counter,
     this.onChanged,
-    this.textAreaHint,
   });
 
   final Alignment? alignment;
@@ -61,8 +60,6 @@ class CustomTextFormField extends StatelessWidget {
   final int? maxLines;
 
   final String? hintText;
-
-  final String? textAreaHint;
 
   final TextStyle? hintStyle;
 
@@ -98,12 +95,12 @@ class CustomTextFormField extends StatelessWidget {
     return alignment != null
         ? Align(
             alignment: alignment ?? Alignment.center,
-            child: textFormFieldWidget,
+            child: textFormFieldWidget(context),
           )
-        : textFormFieldWidget;
+        : textFormFieldWidget(context);
   }
 
-  Widget get textFormFieldWidget => SizedBox(
+  Widget textFormFieldWidget(BuildContext context) => SizedBox(
     width: width ?? double.maxFinite,
     child: TextFormField(
       focusNode: focusNode,
@@ -113,65 +110,73 @@ class CustomTextFormField extends StatelessWidget {
       readOnly: readOnly ?? false,
       onChanged: onChanged,
       controller: controller,
-      // style: textStyle ?? theme.textTheme.titleSmall,
+      style:
+          textStyle ??
+          context.textTheme.bodySmall?.copyWith(
+            fontSize: 16.0.fSize,
+            // color: context.colorScheme.onSurface,
+            // fontWeight: FontWeight.w400,
+          ),
       obscureText: obscureText!,
       textInputAction: textInputAction,
       keyboardType: textInputType,
       maxLines: maxLines ?? 1,
-      decoration: decoration,
+      decoration: decoration(context),
       validator: validator,
     ),
   );
 
-  InputDecoration get decoration => InputDecoration(
+  InputDecoration decoration(BuildContext context) => InputDecoration(
     counter: counter,
-    hintText: textAreaHint,
-    labelText: hintText,
-    hintStyle: GoogleFonts.urbanist(
+    // hintText: textAreaHint,
+    hintText: hintText,
+    hintStyle: context.textTheme.bodySmall?.copyWith(
       fontSize: 14.0.fSize,
-      color: appTheme.textLight,
+      color: context.colorScheme.outline,
       fontWeight: FontWeight.w400,
     ),
-    labelStyle:
-        hintStyle ??
-        GoogleFonts.urbanist(
-          fontSize: 14.0.fSize,
-          color: appTheme.textLight,
-          fontWeight: FontWeight.w400,
-        ),
     prefixIcon: prefix,
     prefixIconConstraints: prefixConstraints,
     suffixIcon: suffix,
     suffixIconConstraints: suffixConstraints,
     isDense: true,
-    contentPadding: contentPadding ?? EdgeInsets.all(13.h),
-    fillColor: fillColor ?? appTheme.background,
+    contentPadding: contentPadding ?? EdgeInsets.all(12.h),
+    fillColor: fillColor ?? context.colorScheme.surface,
     filled: true,
     border:
         borderDecoration ??
         OutlineInputBorder(
           // borderRadius: BorderRadius.circular(10.h),
-          borderSide: BorderSide(color: appTheme.borderColor, width: 1),
+          borderSide: BorderSide(
+            color: context.colorScheme.outline,
+            width: 1.h,
+          ),
         ),
     enabledBorder:
         borderDecoration ??
         OutlineInputBorder(
           // borderRadius: BorderRadius.circular(10.h),
-          borderSide: BorderSide(color: appTheme.grey, width: 1),
+          borderSide: BorderSide(
+            color: context.colorScheme.outline,
+            width: 1.h,
+          ),
         ),
     focusedBorder:
         borderDecoration ??
         OutlineInputBorder(
           // borderRadius: BorderRadius.circular(10.h),
-          borderSide: BorderSide(color: appTheme.borderColor, width: 1),
+          borderSide: BorderSide(
+            color: context.colorScheme.primary,
+            width: 1.h,
+          ),
         ),
     errorBorder: OutlineInputBorder(
       // borderRadius: BorderRadius.circular(10.h),
-      borderSide: BorderSide(color: appTheme.errorRed, width: 1),
+      borderSide: BorderSide(color: context.colorScheme.error, width: 1.h),
     ),
     focusedErrorBorder: OutlineInputBorder(
       // borderRadius: BorderRadius.circular(10.h),
-      borderSide: BorderSide(color: appTheme.grey, width: 1),
+      borderSide: BorderSide(color: context.colorScheme.error, width: 1.h),
     ),
     errorMaxLines: 3,
     errorStyle: TextStyle(fontSize: 12.fSize),

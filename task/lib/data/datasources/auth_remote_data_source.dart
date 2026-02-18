@@ -1,41 +1,31 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import 'package:task/core/network/exception_handler.dart';
+import 'package:task/core/utils/json_utils.dart';
+import 'package:task/data/models/common_model.dart';
 
 import '../../core/network/api_client.dart';
 import '../../core/utils/api_constant.dart';
 
-class AuthRemoteDataSource {
-  final ApiClient _apiClient = ApiClient();
+abstract class AuthRemoteDataSource {
+  Future<CommonModel> login(String email);
+}
 
-  Future<Response> login(String email) async {
+@LazySingleton(as: AuthRemoteDataSource)
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final ApiClient apiClient;
+  AuthRemoteDataSourceImpl({required this.apiClient});
+
+  @override
+  Future<CommonModel> login(String email) async {
     try {
-      Response response = await _apiClient.post(
-        ApiConstant.login,
+      Response response = await apiClient.post(
+        ApiConstant.authLoginEndpoint,
         data: {'email': email},
       );
-      return response;
-    } on DioException catch (e) {
-      String message = e.response?.data['message'] ?? 'Unknown error';
-      throw message;
+      return safeParseJson(response.data, CommonModel.fromJson);
     } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> verifyOtp({
-    required String email,
-    required String otp,
-  }) async {
-    try {
-      Response response = await _apiClient.post(
-        ApiConstant.verifyOtp,
-        data: {'email': email, 'otp': otp},
-      );
-      return response;
-    } on DioException catch (e) {
-      String message = e.response?.data['message'] ?? 'Unknown error';
-      throw message;
-    } catch (e) {
-      rethrow;
+      throw ExceptionHandler.handle(e);
     }
   }
 }

@@ -4,10 +4,7 @@ class SelectionPopupModel {
   String title;
   dynamic value;
 
-  SelectionPopupModel({
-    required this.title,
-    this.value,
-  });
+  SelectionPopupModel({required this.title, this.value});
 
   @override
   bool operator ==(Object other) =>
